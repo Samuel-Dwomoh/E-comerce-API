@@ -1,5 +1,8 @@
 from fastapi import FastAPI
+from database import Base, engine
 from routers import auth, cart, categories, orders, product, reviews, users
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

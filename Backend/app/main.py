@@ -15,6 +15,6 @@ app.include_router(reviews.router)
 app.include_router(users.router)
 
 
-@app.get("/")
+@app.get("/", tags=["home"])
 def home():
     return{"Project Status": "Running.."}

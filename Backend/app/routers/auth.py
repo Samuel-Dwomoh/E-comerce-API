@@ -34,7 +34,10 @@ def register(details:UserModel, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(details: LoginModel, db: Session = Depends(get_db)):
+    
     user = db.query(Users).filter(Users.username == details.username).first()
+    
     if not user or not verify_password(details.password, user.password):
         return {"message": "Invalid credentials"}
+    
     return {"message": "Login successful"}

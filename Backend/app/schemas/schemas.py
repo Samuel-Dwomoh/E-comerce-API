@@ -15,3 +15,10 @@ class Products(Base):
     description = Column(String)
     price = Column(Integer)
     quantity = Column(Integer)
+
+class Cart(Base):
+    __tablename__ = "cart"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    product_id = Column(Integer)
+    quantity = Column(Integer)

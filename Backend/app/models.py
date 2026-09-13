@@ -14,3 +14,8 @@ class ProductModel(BaseModel):
 class LoginModel(BaseModel):
     username: str
     password: str
+    
+class CartModel(BaseModel):
+    user_id: int
+    product_id: int
+    quantity: int

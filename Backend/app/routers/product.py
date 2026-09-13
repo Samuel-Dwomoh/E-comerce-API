@@ -23,3 +23,30 @@ def create_product(product:ProductModel, db:Session = Depends(get_db)):
     db.commit()
     db.refresh(new_product)
     return new_product
+
+@router.patch("/product/{product_id}")
+def update_product(product_name:str, product_description:str, product_price:int, product_quantity:int, product_id:int,db:Session = Depends(get_db)):
+    product = db.query(Products).filter(Products.id == product_id).first()
+    if not product:
+        return {"message": "Product not found"}
+    
+    product.name = product_name
+    product.description = product_description
+    product.price = product_price
+    product.quantity = product_quantity
+    
+    db.commit()
+    db.refresh(product)
+    
+    return {"message": "Product updated successfully", "product": product}
+
+@router.delete("/product/{product_id}")
+def delete_product(product_id:int, db:Session = Depends(get_db)):
+    product = db.query(Products).filter(Products.id == product_id).first()
+    if not product:
+        return {"message": "Product not found"}
+    
+    db.delete(product)
+    db.commit()
+    
+    return {"message": "Product deleted successfully"}

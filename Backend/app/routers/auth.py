@@ -4,9 +4,29 @@ from models import UserModel, LoginModel
 from database import get_db
 from schemas.schemas import Users
 from passlib.context import CryptContext
+import jwt
+from datetime import datetime, timedelta, timezone
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc)+ expires_delta
+    else:
+        expire = datetime.now(timezone.utc)+timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -25,10 +45,12 @@ def register(details:UserModel, db: Session = Depends(get_db)):
         return {"message": "User already exists"}
 
     hashedPassword = hash_password(details.password)
+    
+    user_obj = Users(username=details.username, email=details.email, password=hashedPassword)
 
-    db.add(Users(username=details.username, email=details.email, password=hashedPassword))
+    db.add(user_obj)
     db.commit()
-    db.refresh(new_user)
+    db.refresh(user_obj)
     
     return{"message": "User added succesfully"}
 
@@ -40,4 +62,8 @@ def login(details: LoginModel, db: Session = Depends(get_db)):
     if not user or not verify_password(details.password, user.password):
         return {"message": "Invalid credentials"}
     
-    return {"message": "Login successful"}
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    
+    access_token = create_access_token(data={"sub":str(details.username)}, expires_delta=access_token_expires)
+    
+    return {"access_token": access_token, "token_type": "bearer"}

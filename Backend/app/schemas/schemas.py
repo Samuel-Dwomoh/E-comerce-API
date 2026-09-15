@@ -22,3 +22,11 @@ class Cart(Base):
     user_id = Column(Integer)
     product_id = Column(Integer)
     quantity = Column(Integer)
+
+class Reviews(Base):
+    __tablename__ = "reviews"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    product_id = Column(Integer, ForeignKey("products.id"))
+    review = Column(String)
+    rating = Column(Integer)

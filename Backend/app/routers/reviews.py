@@ -16,3 +16,12 @@ def add_review(id:int, review:str, rating:int, db:Session = Depends(get_db)):
     db.commit()
     db.refresh(new_review)
     return{"message": "Review added successfully", "review": new_review}
+
+@router.delete("/reviews/{id}/reviews")
+def delete_review(id:int, db:Session = Depends(get_db)):
+    review_to_delete = db.query(Reviews).filter(Reviews.id == id).first()
+    if review_to_delete:
+        db.delete(review_to_delete)
+        db.commit()
+        return {"message": "Review deleted successfully"}
+    return {"message": "Review not found"}

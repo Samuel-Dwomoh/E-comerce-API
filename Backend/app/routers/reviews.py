@@ -11,4 +11,8 @@ def get_reviews(id:int, db:Session = Depends(get_db)):
 
 @router.post("/reviews/{id}/reviews")
 def add_review(id:int, review:str, rating:int, db:Session = Depends(get_db)):
-    pass)
+    new_review = Reviews(product_id=id, review=review, rating=rating)
+    db.add(new_review)
+    db.commit()
+    db.refresh(new_review)
+    return{"message": "Review added successfully", "review": new_review}

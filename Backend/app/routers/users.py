@@ -10,3 +10,5 @@ def get_user(id:int, db: Session = Depends(get_db)):
     if not user:
         return{"message":"User not found"}
     return user
+
+@router.delete("/users/{id}")

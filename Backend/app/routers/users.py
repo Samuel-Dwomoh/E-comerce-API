@@ -12,5 +12,10 @@ def get_user(id:int, db: Session = Depends(get_db)):
     return user
 
 @router.delete("/users/{id}")
-def delete_user():
-    pass
+def delete_user(id:int, db:Session =Depends(get_db)):
+    user = db.query(Users).filter(Users.id == id).first()
+    if not user:
+        return{"message":"User not found"}
+    db.delete(user)
+    db.commit()
+    return{"message":"User deleted successfully"}

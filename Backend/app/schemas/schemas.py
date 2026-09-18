@@ -30,3 +30,4 @@ class Reviews(Base):
     product_id = Column(Integer, ForeignKey("products.id"))
     review = Column(String)
     rating = Column(Integer)
+

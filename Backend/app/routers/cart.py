@@ -23,3 +23,4 @@ def update_cart_item(product_id:int, quantity:int, db:Session = Depends(get_db))
     db.query(Cart).filter(Cart.product_id == product_id).update({"quantity": quantity})
     db.commit()
     return {"product_id": product_id, "quantity": quantity}
+

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from schemas.schemas import Reviews
 from database import get_db
+
 router = APIRouter(prefix="/reviews", tags=["reviews"])
 
 @router.get("/reviews/{id}/reviews")

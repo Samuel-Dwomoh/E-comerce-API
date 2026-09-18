@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-
 class UserModel(BaseModel):
     username: str
     email: str
@@ -19,3 +18,4 @@ class CartModel(BaseModel):
     user_id: int
     product_id: int
     quantity: int
+
